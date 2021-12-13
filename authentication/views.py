@@ -1,16 +1,22 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.conf import settings
 
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth import get_user_model
+
 from .forms import LoginForm, SignUpForm
+from .models import PasswordRecovery
 
 from validators import is_invalid
+from StoreBook.decorators import get_ip
 
 import random, string
-
+User = get_user_model()
 
 
 # Create your views here.
@@ -44,44 +50,58 @@ def register(request):
 	success = False
 
 	if request.method == "POST":
-	    form = SignUpForm(request.POST)
+		form = SignUpForm(request.POST)
 
-	    agree 	= request.POST.get("agree")
-	    phone 	= request.POST.get("phone")
+		agree 	= request.POST.get("agree")
+		phone 	= request.POST.get("phone")
 
-	    if agree is None:
-	        msg = 'Please Acccept Privacy Policy'
-	        return render(request, "register.html", {"form": form, "msg" : msg, "success" : success })
+		if agree is None:
+		    msg = 'Please Acccept Privacy Policy'
+		    return render(request, "register.html", {"form": form, "msg" : msg, "success" : success })
+		
+		if form.is_valid():
+		    result = {'success': True}
 
-	    if form.is_valid():
-	        result = {'success': True}
+		    if result['success']:
+		        post = form.save(commit=False)
+		        post.save()
 
-	        if result['success']:
-	            post = form.save(commit=False)
-	            post.save()
+		        username 		= form.cleaned_data.get("username")
+		        email    		= form.cleaned_data.get("email")
+		        raw_password 	= form.cleaned_data.get("password1")
+		        user     = authenticate(username=username, password=raw_password)
 
-	            username 		= form.cleaned_data.get("username")
-	            email    		= form.cleaned_data.get("email")
-	            raw_password 	= form.cleaned_data.get("password1")
-	            user     = authenticate(username=username, password=raw_password)
+		        msg      = 'User created.'
+		        success  = True
 
-	            msg      = 'User created.'
-	            success  = True
+		        register_user_mail(email, raw_password, username)
+		        messages.success(request, 'Registration Completed Successfully. Kindly Login to Continue.')
+		        return redirect("/login/")
 
-	            messages.success(request, 'Registration Completed Successfully. Kindly Login to Continue.')
-	            return redirect("/login/")
+		    else:
+		        msg = 'Invalid reCAPTCHA. Please try again.'
+		        form = SignUpForm()
 
-	        else:
-	            msg = 'Invalid reCAPTCHA. Please try again.'
-	            form = SignUpForm()
-	            return render(request, "register.html", {"form": form, "msg" : msg })
+		        return render(request, "register.html", {"form": form, "msg" : msg })
 
-	    else:
-	        print(form.errors)  
+		else:
+		    print(form.errors)  
 	else:
 	    form = SignUpForm()
 
 	return render(request, "register.html", {"form": form, "msg" : msg, "success" : success })
+
+def register_user_mail(email, password, username):
+
+	subject  = 'Thank You For Signup'
+
+	body     = '<h2>Your Account Information</h2>,<br><br>\
+	    <b>Username:</b> '+username+'<br>\
+	    <b>Password:</b> '+password+'<br><br>'
+
+	msg = EmailMessage(subject, body, 'StoreBook', to=[email])
+	msg.content_subtype = "html"
+	msg.send()
 
 
 def reset_password(request):
@@ -117,12 +137,43 @@ def reset_password(request):
             msg.content_subtype = "html"
             msg.send()
 
-            # PasswordRecovery(username=user, reset_link=url, ip_address=get_ip(request)).save()
+            PasswordRecovery(username=user, reset_link=url, ip_address=get_ip(request)).save()
             messages.success(request, 'Reset Link Sent to '+email)
 
             return render(request,'forget_password.html')
 
     return render(request, 'forget_password.html')
+
+def recover_password(request, val):
+    user = PasswordRecovery.objects.filter(reset_link=val)
+    if not user.exists():
+        messages.error(request, 'Invalid Reset Token')
+        return render(request,'forget_password.html')
+
+    if request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        if is_invalid(password1) or is_invalid(password2):
+            messages.error(request, 'Enter Correct Password')
+            return render(request,'new_password.html') 
+
+        if len(password1) < 8:
+            messages.error(request, 'Password must contain 8 characters')
+            return render(request,'new_password.html') 
+
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match')
+            return render(request,'new_password.html') 
+        
+        User.objects.filter(username=user.last().username).update(password=make_password(password1))
+        user.delete()
+
+        messages.success(request, 'Password Reset Successfully. Login To Continue')
+        return redirect('/login')
+
+    return render(request, 'new_password.html', {'user':user.last()})
+
 
 
 def custom_logout(request):
