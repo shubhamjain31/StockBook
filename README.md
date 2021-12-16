@@ -1,1 +1,2 @@
-# StockBook
+# StockBook  
+Inventory Management
