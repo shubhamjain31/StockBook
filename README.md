@@ -1,2 +1,2 @@
 # StockBook  
-Inventory Management
+Inventory Management System
