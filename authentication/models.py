@@ -18,6 +18,10 @@ class User(AbstractUser):
     last_login              = models.DateTimeField(blank=True, null=True)
     last_logout             = models.DateTimeField(blank=True, null=True)
     date_joined             = models.DateTimeField(auto_now_add=True, editable=False, blank=True)
+
+    is_buyer                = models.BooleanField(default=False)
+    is_supplier             = models.BooleanField(default=False)
+    is_admin                = models.BooleanField(default=False)
     ip_address              = models.CharField(max_length=100, null=True, blank=True)
 
     objects = UserManager()
