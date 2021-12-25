@@ -92,3 +92,7 @@ def delete_supplier(request, id):
 
     messages.success(request, 'Supplier Deleted Successfully')
     return redirect('/supplier-list/')
+
+@login_required(login_url='login')
+def buyer(request, id=None):
+    return render(request, 'store/buyer.html')

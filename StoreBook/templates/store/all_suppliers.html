@@ -113,17 +113,18 @@
 
 {% block js %}
 <script>
-    $(".remove").on('click', function () {
-        $("#modal_body").text(
-          $(this).attr("data-href")
-        );
+    jQuery(document).ready(function($){
+        $(".remove").on('click', function () {
+            $("#modal_body").text(
+              $(this).attr("data-href")
+            );
 
-        $("#delete_button").attr(
-          "href",
-          $(this).attr("src")
-        );
-        $('#supplierModal').modal('show');
-    })  
-
+            $("#delete_button").attr(
+              "href",
+              $(this).attr("src")
+            );
+            $('#supplierModal').modal('show');
+        })  
+    });
 </script>
 {% endblock js %}
