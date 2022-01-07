@@ -71,7 +71,7 @@
                                 <td>{{ supplier.user.email }}</td>
                                 <td>{{ supplier.created_date|date:"Y-m-d"  }}</td>
                                 <td>
-                                    <!-- <a href="/edit-supplier/{{supplier.pk}}"><i class="fa fa-edit fa-lg" title="Edit Supplier"></i></a> &nbsp;&nbsp;&nbsp; -->
+                                    <a href="/edit-supplier/{{supplier.pk}}"><i class="fa fa-edit fa-lg" title="Edit Supplier"></i></a> &nbsp;&nbsp;&nbsp;
                                     <i class="fa fa-window-close fa-lg remove" src="/delete-supplier/{{supplier.pk}}" data-action="delete" data-href="{{supplier.pk}}" title="Delete Supplier"></i>
                                 </td>
                             </tr>

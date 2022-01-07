@@ -38,8 +38,9 @@ def supplier(request, id=None):
 
     if id:
         obj = get_object_or_404(Supplier, id = id)
-        forms = SupplierForm(request.POST or None)
+        forms = SupplierForm(initial={'name': obj.name, 'address': obj.address, 'email':obj.user.email, 'username':obj.user.username})
     else:
+        obj = ''
         forms = SupplierForm()
 
     if request.method == 'POST':
@@ -53,20 +54,32 @@ def supplier(request, id=None):
             password 		= forms.cleaned_data['password']
             retype_password = forms.cleaned_data['retype_password']
 
-            if password == retype_password:
-                user = User.objects.create_user(
-                    username=username, password=password,
-                    email=email, is_supplier=True
-                )
-                Supplier.objects.create(user=user, name=name, address=address, ip_address=get_ip(request), session_user=request.user)
+            if not obj:
+                if password == retype_password:
+                    user = User.objects.create_user(
+                        username=username, password=password,
+                        email=email, is_supplier=True
+                    )
+                    Supplier.objects.create(user=user, name=name, address=address, ip_address=get_ip(request), session_user=request.user)
 
-                messages.success(request, 'Supplier Added Successfully!')
-                return redirect('/supplier-list')
+                    messages.success(request, 'Supplier Added Successfully!')
+                    return redirect('/supplier-list')
+                else:
+                    messages.error(request, 'Password Do Not Match!')
             else:
-                messages.error(request, 'Password Do Not Match!')
-                # return redirect(last)
+                user = User.objects.get(pk=obj.user.pk)
+                user.email      = email
+                user.username   = username
+                user.save()
+
+
+                obj.name            = name
+                obj.address         = address
+                obj.save()
+                messages.success(request, 'Supplier Updated Successfully!')
+                return redirect('/supplier-list')
     
-    params = {'form': forms}
+    params = {'form': forms, 'obj':obj}
     return render(request, 'store/supplier.html', params)
 
 @login_required(login_url='login')

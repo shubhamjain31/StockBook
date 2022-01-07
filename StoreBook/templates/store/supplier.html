@@ -9,7 +9,11 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
+                        {% if obj %}
+                        <h1>Edit Supplier</h1>
+                        {% else %}
                         <h1>Add Supplier</h1>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -19,7 +23,11 @@
                         <ol class="breadcrumb text-right">
                             <li><a href="#">Dashboard</a></li>
                             <li><a href="#">Supplier</a></li>
+                            {% if obj %}
+                            <li class="active">Edit</li>
+                            {% else %}
                             <li class="active">Create</li>
+                            {% endif %}
                         </ol>
                     </div>
                 </div>
@@ -34,7 +42,11 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
+                {% if obj %}
+                <strong class="card-title">Edit Supplier</strong>
+                {% else %}
                 <strong class="card-title">Create Supplier</strong>
+                {% endif %}
             </div>
             <div class="card-body">
                 {% if messages %}
@@ -99,7 +111,7 @@
                             </div>
                             <div>
                                 <button id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
-                                    <span id="payment-button-amount">Create Supplier</span>
+                                    <span id="payment-button-amount">{% if obj %}Edit{% else %}Create{% endif %} Supplier</span>
                                 </button>
                             </div>
                         </form>
