@@ -7,7 +7,7 @@ from StoreBook.decorators import get_ip
 
 from .models import (
     Supplier,
-    # Buyer,
+    Buyer,
     # Season,
     # Drop,
     # Product,
@@ -16,7 +16,7 @@ from .models import (
 )
 from .forms import (
     SupplierForm,
-    # BuyerForm,
+    BuyerForm,
     # SeasonForm,
     # DropForm,
     # ProductForm,
@@ -28,7 +28,7 @@ User = get_user_model()
 
 # Create your views here.
 
-
+@login_required(login_url='login')
 def index(request):
 	return render(request, "index.html")
 
@@ -95,4 +95,43 @@ def delete_supplier(request, id):
 
 @login_required(login_url='login')
 def buyer(request, id=None):
-    return render(request, 'store/buyer.html')
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Supplier, id = id)
+        forms = BuyerForm(request.POST or None)
+    else:
+        forms = BuyerForm()
+
+    if request.method == 'POST':
+        forms = BuyerForm(request.POST)
+
+        if forms.is_valid():
+            name            = forms.cleaned_data['name']
+            address         = forms.cleaned_data['address']
+            email           = forms.cleaned_data['email']
+            username        = forms.cleaned_data['username']
+            password        = forms.cleaned_data['password']
+            retype_password = forms.cleaned_data['retype_password']
+
+            if password == retype_password:
+                user = User.objects.create_user(
+                    username=username, password=password,
+                    email=email, is_buyer=True
+                )
+                Buyer.objects.create(user=user, name=name, address=address, ip_address=get_ip(request), session_user=request.user)
+
+                messages.success(request, 'Buyer Added Successfully!')
+                return redirect('/buyer-list')
+            else:
+                messages.error(request, 'Password Do Not Match!')
+
+    params = {'form': forms}
+    return render(request, 'store/buyer.html', params)
+
+@login_required(login_url='login')
+def all_buyers(request):
+    buyers = Buyer.objects.filter(session_user=request.user)
+
+    params = {'buyers': buyers}
+    return render(request, 'store/all_buyers.html', params)
