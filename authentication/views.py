@@ -8,6 +8,7 @@ from django.conf import settings
 
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
+from django.views.decorators.cache import never_cache
 
 from .forms import LoginForm, SignUpForm
 from .models import PasswordRecovery
@@ -21,6 +22,7 @@ User = get_user_model()
 
 # Create your views here.
 
+@never_cache
 def user_login(request):
 	forms = LoginForm()
 	msg = None

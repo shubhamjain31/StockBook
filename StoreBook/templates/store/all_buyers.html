@@ -71,7 +71,7 @@
                                 <td>{{ buyer.user.email|lower }}</td>
                                 <td>{{ buyer.created_date|date:"Y-m-d"  }}</td>
                                 <td>
-                                    <!-- <a href="/edit-supplier/{{supplier.pk}}"><i class="fa fa-edit fa-lg" title="Edit Supplier"></i></a> &nbsp;&nbsp;&nbsp; -->
+                                    <a href="/edit-buyer/{{buyer.pk}}"><i class="fa fa-edit fa-lg" title="Edit Buyer"></i></a> &nbsp;&nbsp;&nbsp;
                                     <i class="fa fa-window-close fa-lg remove" src="/delete-buyer/{{buyer.pk}}" data-action="delete" data-href="{{buyer.pk}}" title="Delete Buyer"></i>
                                 </td>
                             </tr>

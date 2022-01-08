@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Supplier{% endblock title %}
+{% block title %}
+{% if obj %}
+    Edit Supplier
+{% else %}
+    Add Supplier
+{% endif %}
+{% endblock title %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">

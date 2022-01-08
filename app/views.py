@@ -82,6 +82,8 @@ def supplier(request, id=None):
                 else:
                     messages.error(request, 'Please Enter Valid Password Before Updating Your Data!')
                     return redirect(last)
+        else:
+            print(forms.errors)
     
     params = {'form': forms, 'obj':obj}
     return render(request, 'store/supplier.html', params)
@@ -115,9 +117,10 @@ def buyer(request, id=None):
     last = request.META.get('HTTP_REFERER', None)
 
     if id:
-        obj = get_object_or_404(Supplier, id = id)
-        forms = BuyerForm(request.POST or None)
+        obj = get_object_or_404(Buyer, id = id)
+        forms = BuyerForm(initial={'name': obj.name, 'address': obj.address, 'email':obj.user.email, 'username':obj.user.username})
     else:
+        obj = ''
         forms = BuyerForm()
 
     if request.method == 'POST':
@@ -131,19 +134,38 @@ def buyer(request, id=None):
             password        = forms.cleaned_data['password']
             retype_password = forms.cleaned_data['retype_password']
 
-            if password == retype_password:
-                user = User.objects.create_user(
-                    username=username, password=password,
-                    email=email, is_buyer=True
-                )
-                Buyer.objects.create(user=user, name=name, address=address, ip_address=get_ip(request), session_user=request.user)
+            if not obj:
+                if password == retype_password:
+                    user = User.objects.create_user(
+                        username=username, password=password,
+                        email=email, is_buyer=True
+                    )
+                    Buyer.objects.create(user=user, name=name, address=address, ip_address=get_ip(request), session_user=request.user)
 
-                messages.success(request, 'Buyer Added Successfully!')
-                return redirect('/buyer-list')
+                    messages.success(request, 'Buyer Added Successfully!')
+                    return redirect('/buyer-list')
+                else:
+                    messages.error(request, 'Password Do Not Match!')
             else:
-                messages.error(request, 'Password Do Not Match!')
+                if password == retype_password:
+                    user = User.objects.get(pk=obj.user.pk)
+                    user.email      = email
+                    user.username   = username
+                    user.save()
 
-    params = {'form': forms}
+
+                    obj.name            = name
+                    obj.address         = address
+                    obj.save()
+                    messages.success(request, 'Buyer Updated Successfully!')
+                    return redirect('/buyer-list')
+                else:
+                    messages.error(request, 'Please Enter Valid Password Before Updating Your Data!')
+                    return redirect(last)
+        else:
+            print(forms.errors)
+
+    params = {'form': forms, 'obj':obj}
     return render(request, 'store/buyer.html', params)
 
 @login_required(login_url='login')

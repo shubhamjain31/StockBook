@@ -10,6 +10,7 @@ urlpatterns = [
     path("supplier-list/", views.all_suppliers, name="all_suppliers"),
 
     path("add-buyer/", views.buyer, name="buyer"),
+    path("edit-buyer/<int:id>", views.buyer, name="buyer"),
     path("buyer-list/", views.all_buyers, name="all_buyers"),
 
 
