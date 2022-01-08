@@ -67,17 +67,21 @@ def supplier(request, id=None):
                 else:
                     messages.error(request, 'Password Do Not Match!')
             else:
-                user = User.objects.get(pk=obj.user.pk)
-                user.email      = email
-                user.username   = username
-                user.save()
+                if password == retype_password:
+                    user = User.objects.get(pk=obj.user.pk)
+                    user.email      = email
+                    user.username   = username
+                    user.save()
 
 
-                obj.name            = name
-                obj.address         = address
-                obj.save()
-                messages.success(request, 'Supplier Updated Successfully!')
-                return redirect('/supplier-list')
+                    obj.name            = name
+                    obj.address         = address
+                    obj.save()
+                    messages.success(request, 'Supplier Updated Successfully!')
+                    return redirect('/supplier-list')
+                else:
+                    messages.error(request, 'Please Enter Valid Password Before Updating Your Data!')
+                    return redirect(last)
     
     params = {'form': forms, 'obj':obj}
     return render(request, 'store/supplier.html', params)
