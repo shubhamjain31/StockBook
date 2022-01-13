@@ -1,5 +1,7 @@
 from django import forms
 
+from .models import Season
+
 class SupplierForm(forms.Form):
     name = forms.CharField(error_messages={
         'required'              : 'Please Enter Name',
@@ -125,3 +127,16 @@ class BuyerForm(forms.Form):
         'placeholder': "Enter Re-Password"
     }))
 
+class SeasonForm(forms.ModelForm):
+    class Meta:
+        model = Season
+        fields = ['name', 'description']
+
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'name', 'placeholder': "Enter Name"
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'description', 'placeholder': "Enter Description"
+            })
+        }

@@ -8,7 +8,7 @@ from StoreBook.decorators import get_ip
 from .models import (
     Supplier,
     Buyer,
-    # Season,
+    Season,
     # Drop,
     # Product,
     # Order,
@@ -17,7 +17,7 @@ from .models import (
 from .forms import (
     SupplierForm,
     BuyerForm,
-    # SeasonForm,
+    SeasonForm,
     # DropForm,
     # ProductForm,
     # OrderForm,
@@ -174,3 +174,46 @@ def all_buyers(request):
 
     params = {'buyers': buyers}
     return render(request, 'store/all_buyers.html', params)
+
+@login_required(login_url='login')
+def season(request, id=None):
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Season, id = id)
+        forms = SeasonForm(initial={'name': obj.name, 'description': obj.description})
+    else:
+        obj = ''
+        forms = SeasonForm()
+
+    if request.method == 'POST':
+        forms = SeasonForm(request.POST)
+        print(forms)
+
+        if forms.is_valid():
+            name            = forms.cleaned_data['name']
+            description     = forms.cleaned_data['description']
+
+            if not obj:
+                Season.objects.create(name=name, description=description, ip_address=get_ip(request), session_user=request.user)
+
+                messages.success(request, 'Season Added Successfully!')
+                return redirect('/season-list')
+            else:
+                obj.name                = name
+                obj.description         = description
+                obj.save()
+                messages.success(request, 'Season Updated Successfully!')
+                return redirect('/season-list')
+        else:
+            print(forms.errors)
+
+    params = {'form': forms, 'obj':obj}
+    return render(request, 'store/season.html', params)
+
+@login_required(login_url='login')
+def all_seasons(request):
+    seasons = Season.objects.filter(session_user=request.user)
+
+    params = {'seasons': seasons}
+    return render(request, 'store/all_seasons.html', params)

@@ -14,5 +14,7 @@ urlpatterns = [
     path("buyer-list/", views.all_buyers, name="all_buyers"),
 
 
-    path("add-buyer/", views.buyer, name="buyer"),
+    path("add-season/", views.season, name="season"),
+    path("season-list/", views.all_seasons, name="all_seasons"),
+    path("edit-season/<int:id>", views.season, name="season"),
 ]

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Supplier List{% endblock title %}
+{% block title %}Season List{% endblock title %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -18,7 +18,7 @@
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
                             <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Supplier</a></li>
+                            <li><a href="#">Season</a></li>
                             <li class="active">List</li>
                         </ol>
                     </div>
@@ -34,7 +34,7 @@
     <div class="col-xl-12">
         <div class="card">
             <div class="card-body">
-                <h4 class="box-title">Supplier List </h4>
+                <h4 class="box-title">Season List </h4>
             </div>
             <div class="card-body--">
                 {% if messages %}
@@ -55,29 +55,27 @@
                             <tr>
                                 <th class="serial">Sr No.</th>
                                 <th>Name</th>
-                                <th>Address</th>
-                                <th>Email</th>
+                                <th>Description</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% if suppliers %}
-                            {% for supplier in suppliers %}
+                            {% if seasons %}
+                            {% for season in seasons %}
                             <tr>
                                 <td class="serial">{{ forloop.counter }}</td>
-                                <td>{{ supplier.name }}</td>
-                                <td>{{ supplier.address }}</td>
-                                <td>{{ supplier.user.email }}</td>
-                                <td>{{ supplier.created_date|date:"Y-m-d" }}</td>
+                                <td>{{ season.name }}</td>
+                                <td>{{ season.description }}</td>
+                                <td>{{ season.created_date|date:"Y-m-d" }}</td>
                                 <td>
-                                    <a href="/edit-supplier/{{supplier.pk}}"><i class="fa fa-edit fa-lg" title="Edit Supplier"></i></a> &nbsp;&nbsp;&nbsp;
-                                    <i class="fa fa-window-close fa-lg remove" src="/delete-supplier/{{supplier.pk}}" data-action="delete" data-href="{{supplier.pk}}" title="Delete Supplier"></i>
+                                    <a href="/edit-season/{{season.pk}}"><i class="fa fa-edit fa-lg" title="Edit Season"></i></a> &nbsp;&nbsp;&nbsp;
+                                    <i class="fa fa-window-close fa-lg remove" src="/delete-season/{{season.pk}}" data-action="delete" data-href="{{season.pk}}" title="Delete Season"></i>
                                 </td>
                             </tr>
                             {% endfor %}
                             {% else %}
-                                <tr><td>No Supplier Data</td></tr>
+                                <tr><td>No Season Data</td></tr>
                             {% endif %}
                         </tbody>
                     </table>
