@@ -176,6 +176,21 @@ def all_buyers(request):
     return render(request, 'store/all_buyers.html', params)
 
 @login_required(login_url='login')
+def delete_buyer(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Buyer.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+
+    messages.success(request, 'Buyer Deleted Successfully')
+    return redirect('/buyer-list/')
+
+@login_required(login_url='login')
 def season(request, id=None):
     last = request.META.get('HTTP_REFERER', None)
 
