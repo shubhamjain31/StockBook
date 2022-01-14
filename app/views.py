@@ -181,14 +181,14 @@ def season(request, id=None):
 
     if id:
         obj = get_object_or_404(Season, id = id)
-        forms = SeasonForm(initial={'name': obj.name, 'description': obj.description})
+        forms = SeasonForm(request.POST or None, instance = obj)
     else:
         obj = ''
         forms = SeasonForm()
 
     if request.method == 'POST':
-        forms = SeasonForm(request.POST)
-        print(forms)
+        if not id:
+            forms = SeasonForm(request.POST)
 
         if forms.is_valid():
             name            = forms.cleaned_data['name']
@@ -217,3 +217,18 @@ def all_seasons(request):
 
     params = {'seasons': seasons}
     return render(request, 'store/all_seasons.html', params)
+
+@login_required(login_url='login')
+def delete_season(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Season.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+
+    messages.success(request, 'Season Deleted Successfully')
+    return redirect('/season-list/')
