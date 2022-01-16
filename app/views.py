@@ -9,7 +9,7 @@ from .models import (
     Supplier,
     Buyer,
     Season,
-    # Drop,
+    Drop,
     # Product,
     # Order,
     # Delivery
@@ -18,7 +18,7 @@ from .forms import (
     SupplierForm,
     BuyerForm,
     SeasonForm,
-    # DropForm,
+    DropForm,
     # ProductForm,
     # OrderForm,
     # DeliveryForm
@@ -247,3 +247,44 @@ def delete_season(request, id):
 
     messages.success(request, 'Season Deleted Successfully')
     return redirect('/season-list/')
+
+@login_required(login_url='login')
+def drop(request, id=None):
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Drop, id = id)
+        forms = DropForm(request.POST or None, instance = obj)
+    else:
+        obj = ''
+        forms = DropForm()
+
+    if request.method == 'POST':
+        if not id:
+            forms = DropForm(request.POST)
+
+        if forms.is_valid():
+            name            = forms.cleaned_data['name']
+
+            if not obj:
+                Drop.objects.create(name=name, ip_address=get_ip(request), session_user=request.user)
+
+                messages.success(request, 'Drop Added Successfully!')
+                return redirect('/drop-list')
+            else:
+                obj.name                = name
+                obj.save()
+                messages.success(request, 'Drop Updated Successfully!')
+                return redirect('/drop-list')
+        else:
+            print(forms.errors)
+
+    params = {'form': forms, 'obj':obj}
+    return render(request, 'store/drop.html', params)
+
+@login_required(login_url='login')
+def all_drops(request):
+    drops = Drop.objects.filter(session_user=request.user)
+
+    params = {'drops': drops}
+    return render(request, 'store/all_drops.html', params)

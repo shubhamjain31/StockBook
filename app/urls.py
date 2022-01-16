@@ -14,9 +14,13 @@ urlpatterns = [
     path("buyer-list/", views.all_buyers, name="all_buyers"),
     path("delete-buyer/<int:id>", views.delete_buyer, name="delete_buyer"),
 
-
     path("add-season/", views.season, name="season"),
     path("season-list/", views.all_seasons, name="all_seasons"),
     path("edit-season/<int:id>", views.season, name="season"),
     path("delete-season/<int:id>", views.delete_season, name="delete_season"),
+
+    path("add-drop/", views.drop, name="drop"),
+    path("drop-list/", views.all_drops, name="all_drops"),
+    path("edit-drop/<int:id>", views.drop, name="drop"),
+    
 ]
