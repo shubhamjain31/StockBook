@@ -22,5 +22,6 @@ urlpatterns = [
     path("add-drop/", views.drop, name="drop"),
     path("drop-list/", views.all_drops, name="all_drops"),
     path("edit-drop/<int:id>", views.drop, name="drop"),
-    
+    path("delete-drop/<int:id>", views.delete_drop, name="delete_drop"),
+
 ]

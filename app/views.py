@@ -288,3 +288,18 @@ def all_drops(request):
 
     params = {'drops': drops}
     return render(request, 'store/all_drops.html', params)
+
+@login_required(login_url='login')
+def delete_drop(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Drop.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+
+    messages.success(request, 'Season Deleted Successfully')
+    return redirect('/drop-list/')
