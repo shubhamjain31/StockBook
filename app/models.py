@@ -46,3 +46,13 @@ class Drop(models.Model):
 
     def __str__(self):
         return self.name
+
+class Product(models.Model):
+    name            = models.CharField(max_length=120, unique=True)
+    sortno          = models.PositiveIntegerField()
+    created_date    = models.DateField(auto_now_add=True)
+    ip_address      = models.CharField(max_length=100, blank=True, null=True)
+    session_user    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='session_user_product')
+
+    def __str__(self):
+        return self.name

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Season, Drop
+from .models import Season, Drop, Product
 
 class SupplierForm(forms.Form):
     name = forms.CharField(error_messages={
@@ -149,5 +149,18 @@ class DropForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control', 'id': 'name', 'placeholder': "Enter Name"
+            })
+        }
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'sortno']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'name', 'placeholder': "Enter Name"
+            }),
+            'sortno': forms.NumberInput(attrs={
+                'class': 'form-control', 'id': 'sortno', 'placeholder': "Enter Sortno"
             })
         }

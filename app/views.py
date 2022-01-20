@@ -10,7 +10,7 @@ from .models import (
     Buyer,
     Season,
     Drop,
-    # Product,
+    Product,
     # Order,
     # Delivery
 )
@@ -19,7 +19,7 @@ from .forms import (
     BuyerForm,
     SeasonForm,
     DropForm,
-    # ProductForm,
+    ProductForm,
     # OrderForm,
     # DeliveryForm
 )
@@ -303,3 +303,59 @@ def delete_drop(request, id):
 
     messages.success(request, 'Season Deleted Successfully')
     return redirect('/drop-list/')
+
+@login_required(login_url='login')
+def product(request, id=None):
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Product, id = id)
+        forms = ProductForm(request.POST or None, instance = obj)
+    else:
+        obj = ''
+        forms = ProductForm()
+
+    if request.method == 'POST':
+        if not id:
+            forms = ProductForm(request.POST)
+
+        if forms.is_valid():
+            name            = forms.cleaned_data['name']
+            sortno          = forms.cleaned_data['sortno']
+
+            if not obj:
+                Product.objects.create(name=name, sortno=sortno, ip_address=get_ip(request), session_user=request.user)
+
+                messages.success(request, 'Product Added Successfully!')
+                return redirect('/product-list')
+            else:
+                obj.name                = name
+                obj.sortno              = sortno
+                obj.save()
+                messages.success(request, 'Product Updated Successfully!')
+                return redirect('/product-list')
+    
+    params = {'form': forms, 'obj':obj}
+    return render(request, 'store/product.html', params)
+
+@login_required(login_url='login')
+def all_products(request):
+    products = Product.objects.filter(session_user=request.user)
+
+    params = {'products': products}
+    return render(request, 'store/all_products.html', params)
+
+@login_required(login_url='login')
+def delete_product(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Product.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+
+    messages.success(request, 'Product Deleted Successfully')
+    return redirect('/product-list/')
