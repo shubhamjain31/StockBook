@@ -11,7 +11,7 @@ from .models import (
     Season,
     Drop,
     Product,
-    # Order,
+    Order,
     # Delivery
 )
 from .forms import (
@@ -20,7 +20,7 @@ from .forms import (
     SeasonForm,
     DropForm,
     ProductForm,
-    # OrderForm,
+    OrderForm,
     # DeliveryForm
 )
 
@@ -359,3 +359,58 @@ def delete_product(request, id):
 
     messages.success(request, 'Product Deleted Successfully')
     return redirect('/product-list/')
+
+@login_required(login_url='login')
+def order(request, id=None):
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Product, id = id)
+        forms = OrderForm(request.POST or None, instance = obj)
+    else:
+        obj = ''
+        forms = OrderForm()
+
+    if request.method == 'POST':
+        if not id:
+            forms = OrderForm(request.POST)
+
+        if forms.is_valid():
+            supplier    = forms.cleaned_data['supplier']
+            product     = forms.cleaned_data['product']
+            design      = forms.cleaned_data['design']
+            color       = forms.cleaned_data['color']
+            buyer       = forms.cleaned_data['buyer']
+            season      = forms.cleaned_data['season']
+            drop        = forms.cleaned_data['drop']
+
+            if not obj:
+                Order.objects.create(
+                    supplier    = supplier,
+                    product     = product,
+                    design      = design,
+                    color       = color,
+                    buyer       = buyer,
+                    season      = season,
+                    drop        = drop,
+                    status      = 'pending',
+                    ip_address  = get_ip(request), 
+                    session_user = request.user
+                )
+
+                messages.success(request, 'Order Added Successfully!')
+                return redirect('/order-list')
+            else:
+                obj.supplier            = supplier
+                obj.product             = product
+                obj.design              = design
+                obj.color               = color
+                obj.buyer               = buyer
+                obj.season              = season
+                obj.drop                = drop
+                obj.save()
+                messages.success(request, 'Order Updated Successfully!')
+                return redirect('/order-list')
+    
+    params = {'form': forms, 'obj':obj}
+    return render(request, 'store/order.html', params)
