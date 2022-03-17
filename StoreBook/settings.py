@@ -82,8 +82,8 @@ WSGI_APPLICATION = 'StoreBook.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'stockbook',
-        'USER': 'postgres',
+        'NAME': 'postgres',
+        'USER': 'tecmint',
         'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '5432',
