@@ -53,31 +53,50 @@
                     <table class="table ">
                         <thead>
                             <tr>
-                                <th class="serial">Sr No.</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Email</th>
+                                <th class="serial">#</th>
+                                <th>Supplier</th>
+                                <th>Product</th>
+                                <th>Design</th>
+                                <th>Color</th>
+                                <th>Buyer</th>
+                                <th>Season</th>
+                                <th>Drop</th>
                                 <th>Date</th>
-                                <th>Action</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% if buyers %}
-                            {% for buyer in buyers %}
+                            {% if orders %}
+                            {% for order in orders %}
                             <tr>
                                 <td class="serial">{{ forloop.counter }}</td>
-                                <td>{{ buyer.name }}</td>
-                                <td>{{ buyer.address }}</td>
-                                <td>{{ buyer.user.email|lower }}</td>
-                                <td>{{ buyer.created_date|date:"Y-m-d"  }}</td>
+                                <td>{{ order.supplier }}</td>
+                                <td>{{ order.product }}</td>
+                                <td>{{ order.design }}</td>
+                                <td>{{ order.color }}</td>
+                                <td>{{ order.buyer }}</td>
+                                <td>{{ order.season }}</td>
+                                <td>{{ order.drop }}</td>
+                                <td>{{ order.created_date|date:"Y-m-d" }}</td>
                                 <td>
-                                    <a href="/edit-buyer/{{buyer.pk}}"><i class="fa fa-edit fa-lg" title="Edit Buyer"></i></a> &nbsp;&nbsp;&nbsp;
-                                    <i class="fa fa-window-close fa-lg remove" src="/delete-buyer/{{buyer.pk}}" data-action="delete" data-href="{{buyer.pk}}" title="Delete Buyer"></i>
+                                    {% if order.status == 'pending' %}
+                                        <a class="btn btn-warning" href="">{{ order.status }}</a>
+                                    {% elif order.status == 'decline' %}
+                                        <a class="btn btn-danger" href="">{{ order.status }}</a>
+                                    {% elif order.status == 'complete' %}
+                                        <a class="btn btn-success" href="">{{ order.status }}</a>
+                                    {% elif order.status == 'approved' %}
+                                        <a class="btn btn-primary" href="">{{ order.status }}</a>
+                                    {% elif order.status == 'bulk' %}
+                                        <a class="btn btn-secondary" href="">{{ order.status }}</a>
+                                    {% else %}
+                                        <a class="btn btn-info" href="">{{ order.status }}</a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
                             {% else %}
-                                <tr><td>No Buyer Data</td></tr>
+                                <tr><td>No Order Data</td></tr>
                             {% endif %}
                         </tbody>
                     </table>

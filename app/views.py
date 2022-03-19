@@ -414,3 +414,10 @@ def order(request, id=None):
     
     params = {'form': forms, 'obj':obj}
     return render(request, 'store/order.html', params)
+
+@login_required(login_url='login')
+def all_orders(request):
+    orders = Order.objects.filter(session_user=request.user)
+
+    params = {'orders': orders}
+    return render(request, 'store/all_orders.html', params)
