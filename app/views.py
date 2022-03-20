@@ -365,7 +365,7 @@ def order(request, id=None):
     last = request.META.get('HTTP_REFERER', None)
 
     if id:
-        obj = get_object_or_404(Product, id = id)
+        obj = get_object_or_404(Order, id = id)
         forms = OrderForm(request.POST or None, instance = obj)
     else:
         obj = ''
