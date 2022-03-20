@@ -63,6 +63,7 @@
                                 <th>Drop</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,6 +94,10 @@
                                         <a class="btn btn-info" href="">{{ order.status }}</a>
                                     {% endif %}
                                 </td>
+                                <td>
+                                    <a href="/edit-order/{{order.pk}}"><i class="fa fa-edit fa-lg" title="Edit Order"></i></a> &nbsp;&nbsp;&nbsp;
+                                    <i class="fa fa-window-close fa-lg remove" src="/delete-order/{{order.pk}}" data-action="delete" data-href="{{order.pk}}" title="Delete Order"></i>
+                                </td>
                             </tr>
                             {% endfor %}
                             {% else %}
@@ -110,7 +115,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Delete Buyer</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Delete Order</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

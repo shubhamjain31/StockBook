@@ -421,3 +421,18 @@ def all_orders(request):
 
     params = {'orders': orders}
     return render(request, 'store/all_orders.html', params)
+
+@login_required(login_url='login')
+def delete_order(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Order.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+
+    messages.success(request, 'Order Deleted Successfully')
+    return redirect('/order-list/')
