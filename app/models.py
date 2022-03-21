@@ -80,3 +80,13 @@ class Order(models.Model):
 
     def __str__(self):
         return self.product.name
+
+class Delivery(models.Model):
+    order               = models.ForeignKey(Order, on_delete=models.CASCADE)
+    courier_name        = models.CharField(max_length=120)
+    created_date        = models.DateField(auto_now_add=True)
+    ip_address          = models.CharField(max_length=100, blank=True, null=True)
+    session_user        = models.ForeignKey(User, on_delete=models.CASCADE, related_name='session_user_delivery')
+
+    def __str__(self):
+        return self.courier_name

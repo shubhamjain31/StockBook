@@ -12,7 +12,7 @@ from .models import (
     Drop,
     Product,
     Order,
-    # Delivery
+    Delivery
 )
 from .forms import (
     SupplierForm,
@@ -21,7 +21,7 @@ from .forms import (
     DropForm,
     ProductForm,
     OrderForm,
-    # DeliveryForm
+    DeliveryForm
 )
 
 User = get_user_model()
@@ -436,3 +436,10 @@ def delete_order(request, id):
 
     messages.success(request, 'Order Deleted Successfully')
     return redirect('/order-list/')
+
+@login_required(login_url='login')
+def all_deliveries(request):
+    deliveries = Delivery.objects.filter(session_user=request.user)
+
+    params = {'deliveries': deliveries}
+    return render(request, 'store/all_deliveries.html', params)
