@@ -199,7 +199,7 @@ class OrderForm(forms.ModelForm):
 class DeliveryForm(forms.ModelForm):
     class Meta:
         model = Delivery
-        fields = '__all__'
+        fields = ['order', 'courier_name']
 
         widgets = {
             'order': forms.Select(attrs={

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 
 from StoreBook.decorators import get_ip
+from validators import is_invalid
 
 from .models import (
     Supplier,
@@ -443,3 +444,44 @@ def all_deliveries(request):
 
     params = {'deliveries': deliveries}
     return render(request, 'store/all_deliveries.html', params)
+
+@login_required(login_url='login')
+def delivery(request, id=None):
+    last = request.META.get('HTTP_REFERER', None)
+
+    if id:
+        obj = get_object_or_404(Delivery, id = id)
+        forms = DeliveryForm(request.POST or None, instance = obj)
+    else:
+        obj = ''
+        forms = DeliveryForm()
+
+    if request.method == 'POST':
+        if not id:
+            forms = DeliveryForm(request.POST)
+
+        if forms.is_valid():
+            order            = forms.cleaned_data['order']
+            courier_name     = forms.cleaned_data['courier_name']
+
+            if not obj:
+                Delivery.objects.create(
+                    order            = order,
+                    courier_name     = courier_name,
+                    ip_address       = get_ip(request), 
+                    session_user     = request.user
+                )
+
+                messages.success(request, 'Delivery Added Successfully!')
+                return redirect('/delivery-list')
+            else:
+                obj.order            = order,
+                obj.courier_name     = courier_name
+                obj.save()
+                messages.success(request, 'Delivery Updated Successfully!')
+                return redirect('/delivery-list')
+        else:
+            messages.error(request, 'Something Went Wrong!')
+    
+    params = {'form': forms, 'obj':obj}
+    return render(request, 'store/delivery.html', params)
