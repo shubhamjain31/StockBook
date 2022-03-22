@@ -57,6 +57,7 @@
                                 <th>Order</th>
                                 <th>Courier Name</th>
                                 <th>Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,7 +67,11 @@
                                 <td class="serial">{{ forloop.counter }}</td>
                                 <td>{{ delivery.order }}</td>
                                 <td>{{ delivery.courier_name }}</td>
-                                <td>{{ delivery.created_date }}</td>
+                                <td>{{ delivery.created_date|date:"Y-m-d" }}</td>
+                                <td>
+                                    <a href="/edit-delivery/{{delivery.pk}}"><i class="fa fa-edit fa-lg" title="Edit Delivery"></i></a> &nbsp;&nbsp;&nbsp;
+                                    <i class="fa fa-window-close fa-lg remove" src="/delete-delivery/{{delivery.pk}}" data-action="delete" data-href="{{delivery.pk}}" title="Delete Delivery"></i>
+                                </td>
                             </tr>
                             {% endfor %}
                             {% else %}

@@ -475,7 +475,7 @@ def delivery(request, id=None):
                 messages.success(request, 'Delivery Added Successfully!')
                 return redirect('/delivery-list')
             else:
-                obj.order            = order,
+                obj.order.pk         = order.pk,
                 obj.courier_name     = courier_name
                 obj.save()
                 messages.success(request, 'Delivery Updated Successfully!')

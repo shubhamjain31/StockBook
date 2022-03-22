@@ -36,5 +36,5 @@ urlpatterns = [
 
     path("delivery-list/", views.all_deliveries, name="all_deliveries"),
     path("add-delivery/", views.delivery, name="delivery"),
-    
+    path("edit-delivery/<int:id>", views.delivery, name="delivery"),
 ]
