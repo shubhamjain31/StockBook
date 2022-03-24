@@ -485,3 +485,17 @@ def delivery(request, id=None):
     
     params = {'form': forms, 'obj':obj}
     return render(request, 'store/delivery.html', params)
+
+@login_required(login_url='login')
+def delete_delivery(request, id):
+    last = request.META.get('HTTP_REFERER', None)
+    
+    try:
+        obj      = Delivery.objects.get(pk=id)
+    except:
+        messages.error(request, 'Something Went Wrong!')
+        return redirect(last)
+
+    obj.delete()
+    messages.success(request, 'Delivery Deleted Successfully')
+    return redirect('/delivery-list/')
