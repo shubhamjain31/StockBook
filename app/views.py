@@ -499,3 +499,6 @@ def delete_delivery(request, id):
     obj.delete()
     messages.success(request, 'Delivery Deleted Successfully')
     return redirect('/delivery-list/')
+
+def user_settings(request):
+    return render(request, 'settings.html')
