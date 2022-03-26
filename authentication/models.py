@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class User(AbstractUser):
-    fullname                = models.CharField(max_length=20, blank=True, null=True)
+    fullname                = models.CharField(max_length=20)
     username                = models.CharField(max_length=20, unique=True)
     email                   = models.EmailField(unique=True)
     mobile                  = models.CharField(max_length=20, blank=True, null=True)
@@ -27,7 +27,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['fullname']
 
     class Meta:
         db_table = 'user'
