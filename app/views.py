@@ -1,3 +1,4 @@
+import email
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -501,4 +502,54 @@ def delete_delivery(request, id):
     return redirect('/delivery-list/')
 
 def user_settings(request):
-    return render(request, 'settings.html')
+    last = request.META.get('HTTP_REFERER', None)
+
+    obj = User.objects.get(username=request.user)
+
+    if request.method == 'POST':
+        fullname    = request.POST.get('full_name')
+        firstname   = request.POST.get('first_name')
+        lastname    = request.POST.get('last_name')
+        mobile      = request.POST.get('mobile')
+
+        if fullname is None:
+            messages.error(request, "Enter Valid Full Name")
+            return redirect(last)
+
+        if is_invalid(fullname):
+            messages.error(request, "Enter Valid Full Name")
+            return redirect(last)
+
+        if firstname is None:
+            messages.error(request, "Enter Valid First Name")
+            return redirect(last)
+
+        if is_invalid(firstname):
+            messages.error(request, "Enter Valid First Name")
+            return redirect(last)
+
+        if lastname is None:
+            messages.error(request, "Enter Valid Last Name")
+            return redirect(last)
+
+        if is_invalid(lastname):
+            messages.error(request, "Enter Valid Last Name")
+            return redirect(last)
+
+        if mobile is None:
+            messages.error(request, "Enter Valid Mobile")
+            return redirect(last)
+
+        if is_invalid(mobile):
+            messages.error(request, "Enter Valid Mobile")
+            return redirect(last)
+
+        obj.fullname    = fullname
+        obj.first_name  = firstname
+        obj.last_name   = fullname
+        obj.mobile      = lastname
+        obj.save()
+        messages.success(request, 'Settings Updated!')
+
+    params = {'user_obj': obj}
+    return render(request, 'settings.html', params)

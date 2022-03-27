@@ -49,16 +49,35 @@ Settings
                 {% endif %}
                 <div id="pay-invoice">
                     <div class="card-body">
-                        <form>
+                        <form method="post" action="">{% csrf_token %}
                             <div class="form-row">
-                              <div class="form-group col-md-6">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username" placeholder="Username" name="username">
+                              <div class="form-group col-md-4">
+                                <label for="username">Username*</label>
+                                <input type="text" class="form-control" id="username" placeholder="Username" value="{{user_obj.username}}" readonly>
                               </div>
-                              <div class="form-group col-md-6">
-                                <label for="email">Email</label>
-                                <input type="email" class="form-control" id="email" placeholder="Email" name="email">
+                              <div class="form-group col-md-4">
+                                <label for="email">Email*</label>
+                                <input type="email" class="form-control" id="email" placeholder="Email" value="{{user_obj.email}}" readonly>
                               </div>
+                              <div class="form-group col-md-4">
+                                <label for="full_name">Full Name*</label>
+                                <input type="text" class="form-control" id="full_name" placeholder="Full Name" value="{{user_obj.fullname}}" name="full_name">
+                              </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                  <label for="first_name">First Name*</label>
+                                  <input type="text" class="form-control" id="first_name" value="{{user_obj.first_name|default:''}}" placeholder="First Name" name="first_name">
+                                </div>
+                                <div class="form-group col-md-4">
+                                  <label for="last_name">Last Name*</label>
+                                  <input type="text" class="form-control" id="last_name" value="{{user_obj.last_name|default:''}}" placeholder="Last Name" name="last_name">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="mobile">Mobile*</label>
+                                    <input type="text" class="form-control" id="mobile" placeholder="Mobile" name="mobile" value="{{user_obj.mobile|default:''}}">
+                                </div>
                             </div>
                             
                             <button type="submit" class="btn btn-primary">Update</button>
