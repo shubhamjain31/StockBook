@@ -546,8 +546,8 @@ def user_settings(request):
 
         obj.fullname    = fullname
         obj.first_name  = firstname
-        obj.last_name   = fullname
-        obj.mobile      = lastname
+        obj.last_name   = lastname
+        obj.mobile      = mobile
         obj.save()
         messages.success(request, 'Settings Updated!')
 
