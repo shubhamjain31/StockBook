@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Upgrade{% endblock title %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="box-title">Buyer List </h4>
+            </div>
+            <div class="card-body--">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div
+                      class="alert {% if message.tags == 'error' %}alert-warning {% else %} alert-{{ message.tags }}{% endif %}"
+                      role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                      </button>
+                      {{message}}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                
+            </div>
+        </div> <!-- /.card -->
+    </div>  <!-- /.col-lg-8 -->
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script>
+</script>
+{% endblock js %}

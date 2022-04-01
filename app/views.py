@@ -553,3 +553,7 @@ def user_settings(request):
 
     params = {'user_obj': obj}
     return render(request, 'settings.html', params)
+
+@login_required(login_url='login')
+def upgrade(request):
+    return render(request, 'store/upgrade.html')
